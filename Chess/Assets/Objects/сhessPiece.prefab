@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6553119462741202408}
   - component: {fileID: 1122078320684976344}
-  - component: {fileID: -7976609761958354669}
+  - component: {fileID: 5703025722187557086}
   - component: {fileID: 7453103884889777135}
   m_Layer: 0
   m_Name: "\u0441hessPiece"
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 909166885603412705}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.644, y: -3.642, z: -2}
+  m_LocalPosition: {x: -7.17, y: -3.43, z: -2}
   m_LocalScale: {x: 6.5, y: 6.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-7976609761958354669
+--- !u!114 &5703025722187557086
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,7 +95,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 909166885603412705}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64d6b41f1e540a045abe40f5622c1205, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ea2e5b4092fafd4f87dce1abc834a2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
@@ -112,24 +112,6 @@ MonoBehaviour:
   black_pawn: {fileID: 21300000, guid: 1a28f852e6463f544b0e7c5812162aff, type: 3}
   black_queen: {fileID: 21300000, guid: ad0ca9f7109845b49beecaf058f68cd2, type: 3}
   black_rook: {fileID: 21300000, guid: 7534ebab4480b2d41bfa30db42daf37f, type: 3}
-  green_bishop: {fileID: 21300000, guid: 9f96f824bd2b3f14e857c5b50c82c34f, type: 3}
-  green_king: {fileID: 21300000, guid: 629d8a9f45f11ff4a9ae4be305abf3cc, type: 3}
-  green_knight: {fileID: 21300000, guid: be7886b11662f294aaff8c92635a2202, type: 3}
-  green_pawn: {fileID: 21300000, guid: 6db0b658e741c3e42aed5b5f04e49e1c, type: 3}
-  green_queen: {fileID: 21300000, guid: ff4ee23b9b7284c46b314d170ffe0ffd, type: 3}
-  green_rook: {fileID: 21300000, guid: c6e62967a6868fd4e9c124fc581464cc, type: 3}
-  blue_bishop: {fileID: 21300000, guid: 826af65eab2a2d343b9837e5931881d0, type: 3}
-  blue_king: {fileID: 21300000, guid: 660215bb7397fae46b3a7c7b59416ac4, type: 3}
-  blue_knight: {fileID: 21300000, guid: ceac98d71ef041848ab20962a5fb250a, type: 3}
-  blue_pawn: {fileID: 21300000, guid: 14fca05b7aaa7a842b7e6c34c43e83a7, type: 3}
-  blue_queen: {fileID: 21300000, guid: f7927381c456a8545ab653b3bdb91abb, type: 3}
-  blue_rook: {fileID: 21300000, guid: c2a8d1be07ed5794683c1ac105413b0e, type: 3}
-  red_bishop: {fileID: 21300000, guid: c15c4c804de623d4e969e74b638389e5, type: 3}
-  red_king: {fileID: 21300000, guid: 591dbd4de4f9ae9408e2ea3c94419237, type: 3}
-  red_knight: {fileID: 21300000, guid: 52990b3dc5c619d49a3837deab525514, type: 3}
-  red_pawn: {fileID: 21300000, guid: 5c75c6fa0c5ca5e459775fa218589b3f, type: 3}
-  red_queen: {fileID: 21300000, guid: dc541c1985557f14890566e4e98c1b20, type: 3}
-  red_rook: {fileID: 21300000, guid: a190327fbf0c49c44be943326825872f, type: 3}
 --- !u!61 &7453103884889777135
 BoxCollider2D:
   m_ObjectHideFlags: 0

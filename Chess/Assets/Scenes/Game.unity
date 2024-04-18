@@ -132,7 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 448431076}
-  - component: {fileID: 448431075}
+  - component: {fileID: 448431077}
   m_Layer: 0
   m_Name: Controller
   m_TagString: GameController
@@ -140,7 +140,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &448431075
+--- !u!4 &448431076
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448431074}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.47215527, y: -0.42697883, z: 0.06724387}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &448431077
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,7 +164,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 448431074}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f891fab9f796654a91ff7bd02f3457b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ed40e8fad8295f4180c2fc7498e006e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   chessPiece: {fileID: 909166885603412705, guid: 04e7bd0c7b3bcaa409c202e88dd70ef4, type: 3}
@@ -187,21 +202,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
---- !u!4 &448431076
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 448431074}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.47215527, y: -0.42697883, z: 0.06724387}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
