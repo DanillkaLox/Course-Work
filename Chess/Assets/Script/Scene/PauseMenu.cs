@@ -28,12 +28,14 @@ public class PauseMenu : MonoBehaviour
     public void BackToMainMenu()
     {
         Time.timeScale = 1f;
+        AudioManager.instance.Play("ButtonSound");
         SceneManager.LoadScene("Menu");
     }
 
     public void Resume()
     {
         pauseGameMenu.SetActive(false);
+        AudioManager.instance.Play("ButtonSound");
         Time.timeScale = 1f;
         pauseGame = false;
     }
@@ -41,7 +43,10 @@ public class PauseMenu : MonoBehaviour
     public void Pause()
     {
         pauseGameMenu.SetActive(true);
+        AudioManager.instance.Play("ButtonSound");
         Time.timeScale = 0f;
         pauseGame = true;
     }
+
+    
 }
