@@ -1,25 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MovePlate : MonoBehaviour
 {
     public GameObject controller;
-
-    public GameObject reference = null;
-
+    public GameObject reference;
+    
     public int matrixX;
     public int matrixY;
 
-    public bool attack = false;
+    public bool attack;
 
-    public Sprite move_plate, move_plate_attack;
+    [FormerlySerializedAs("move_plate")] public Sprite movePlate;
+    [FormerlySerializedAs("move_plate_attack")] public Sprite movePlateAttack;
 
     public void Start()
     {
         if (attack)
         {
-            gameObject.GetComponent<SpriteRenderer>().sprite = move_plate_attack;
+            gameObject.GetComponent<SpriteRenderer>().sprite = movePlateAttack;
         }
     }
 
@@ -31,24 +30,22 @@ public class MovePlate : MonoBehaviour
         {
             GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);
 
-			if (cp.name == "white_king") controller.GetComponent<Game>().Winner("black");
-            if (cp.name == "black_king") controller.GetComponent<Game>().Winner("white");
-
-            Destroy(cp);
+            if (cp.name == "white_king") controller.GetComponent<Game>().Winner("BLACK");
+            if (cp.name == "black_king") controller.GetComponent<Game>().Winner("WHITE");
+            
+            controller.GetComponent<Game>().RemovePiece(cp);
         }
 
         controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Chessman>().GetXBoard(),
             reference.GetComponent<Chessman>().GetYBoard());
 
-        reference.GetComponent<Chessman>().SetXBoard(matrixX);
-        reference.GetComponent<Chessman>().SetYBoard(matrixY);
-        reference.GetComponent<Chessman>().SetCoords();
+        reference.GetComponent<Chessman>().MovePiece(matrixX, matrixY);
 
         controller.GetComponent<Game>().SetPosition(reference);
 
-		controller.GetComponent<Game>().NextTurn();
-
         reference.GetComponent<Chessman>().DestroyMovePlates();
+
+        controller.GetComponent<Game>().NextTurn();
     }
 
     public void SetCoords(int x, int y)

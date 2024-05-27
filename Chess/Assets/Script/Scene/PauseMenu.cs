@@ -1,13 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
     public bool pauseGame;
+    
     public GameObject pauseGameMenu;
 
     private void Update()
@@ -28,14 +25,14 @@ public class PauseMenu : MonoBehaviour
     public void BackToMainMenu()
     {
         Time.timeScale = 1f;
-        AudioManager.instance.Play("ButtonSound");
+        AudioManager.Instance.Play("ButtonSound");
         SceneManager.LoadScene("Menu");
     }
 
     public void Resume()
     {
         pauseGameMenu.SetActive(false);
-        AudioManager.instance.Play("ButtonSound");
+        AudioManager.Instance.Play("ButtonSound");
         Time.timeScale = 1f;
         pauseGame = false;
     }
@@ -43,10 +40,14 @@ public class PauseMenu : MonoBehaviour
     public void Pause()
     {
         pauseGameMenu.SetActive(true);
-        AudioManager.instance.Play("ButtonSound");
+        AudioManager.Instance.Play("ButtonSound");
         Time.timeScale = 0f;
         pauseGame = true;
     }
 
-    
+    public void Restart()
+    {
+        AudioManager.Instance.Play("ButtonSound");
+        SceneManager.LoadScene("Game");
+    }
 }

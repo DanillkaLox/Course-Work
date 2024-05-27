@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MainScene : MonoBehaviour
 {
@@ -9,7 +6,7 @@ public class MainScene : MonoBehaviour
     public GameObject playMode;
     public void PlayButton()
     {
-        AudioManager.instance.Play("ButtonSound");
+        AudioManager.Instance.Play("ButtonSound");
         mainMenu.SetActive(false);
         playMode.SetActive(true);
     }
@@ -18,6 +15,6 @@ public class MainScene : MonoBehaviour
     {
         Debug.Log("Game Closed");
         Application.Quit();
-        AudioManager.instance.Play("ButtonSound");
+        AudioManager.Instance.Play("ButtonSound");
     }
 }

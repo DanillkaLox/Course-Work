@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
 public class VolumeButton : MonoBehaviour
@@ -12,7 +9,7 @@ public class VolumeButton : MonoBehaviour
     
     public void VolumeOnOff()
     {
-        AudioManager.instance.Play("ButtonSound");
+        AudioManager.Instance.Play("ButtonSound");
         if (targetButton.sprite == buttonSprites[0])
         {
             AudioListener.volume = 0f;
