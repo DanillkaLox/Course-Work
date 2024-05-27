@@ -504,4 +504,5 @@ public class Chessman : MonoBehaviour
             moves.Add(new Vector2(x, y));
         }
     }
+    
 }
