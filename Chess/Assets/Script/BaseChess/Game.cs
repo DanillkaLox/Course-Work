@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Game : MonoBehaviour
 {
     public GameObject chessPiece;
-    
+
     public GameObject winnerText;
 
     public GameObject gameOverMenu;
@@ -18,10 +18,12 @@ public class Game : MonoBehaviour
 
     private bool _gameOver;
     
+    private Stack<Move> _moveHistory = new Stack<Move>();
+
     public void Start()
     {
         Time.timeScale = 1f;
-        
+
         playerWhite = new[]
         {
             Create("white_rook", 0, 0), Create("white_knight", 1, 0),
@@ -46,6 +48,7 @@ public class Game : MonoBehaviour
         {
             SetPosition(piece);
         }
+
         foreach (var piece in playerWhite)
         {
             SetPosition(piece);
@@ -85,7 +88,7 @@ public class Game : MonoBehaviour
         return x >= 0 && y >= 0 && x < _positions.GetLength(0) && y < _positions.GetLength(1);
     }
 
-	public string GetCurrentPlayer()
+    public string GetCurrentPlayer()
     {
         return _currentPlayer;
     }
@@ -107,6 +110,11 @@ public class Game : MonoBehaviour
         {
             Debug.Log(_currentPlayer + " is in check!");
         }
+
+        if (_currentPlayer == "black")
+        {
+            MakeBestMove();
+        }
     }
 
     public void Update()
@@ -123,11 +131,11 @@ public class Game : MonoBehaviour
         gameOverMenu.SetActive(true);
         Time.timeScale = 0f;
     }
-    
+
     public void Winner(string playerWinner)
     {
         _gameOver = true;
-        
+
         winnerText.GetComponent<Text>().text = playerWinner + " IS THE WINNER";
     }
 
@@ -177,7 +185,7 @@ public class Game : MonoBehaviour
         foreach (var piece in _currentPlayer == "white" ? playerWhite : playerBlack)
         {
             if (piece == null || !piece.activeSelf) continue;
-        
+
             Chessman cm = piece.GetComponent<Chessman>();
             List<Vector2> possibleMoves = cm.GetPossibleMoves();
 
@@ -213,14 +221,14 @@ public class Game : MonoBehaviour
 
         return true;
     }
-    
+
     public void RemovePiece(GameObject piece)
     {
         if (piece == null) return;
 
         Chessman cm = piece.GetComponent<Chessman>();
         List<GameObject> opponentPieces = new List<GameObject>(_currentPlayer == "white" ? playerBlack : playerWhite);
-        
+
         for (int i = 0; i < opponentPieces.Count; i++)
         {
             if (opponentPieces[i] == piece)
@@ -229,19 +237,19 @@ public class Game : MonoBehaviour
                 break;
             }
         }
-        
+
         piece.SetActive(false);
-        
+
         SetPositionEmpty(cm.GetXBoard(), cm.GetYBoard());
     }
-    
+
     public bool IsMoveLegal(GameObject piece, int targetX, int targetY)
     {
         Chessman chessman = piece.GetComponent<Chessman>();
         int originalX = chessman.GetXBoard();
         int originalY = chessman.GetYBoard();
         GameObject targetPiece = GetPosition(targetX, targetY);
-        
+
         SetPositionEmpty(originalX, originalY);
         chessman.SetXBoard(targetX);
         chessman.SetYBoard(targetY);
@@ -250,7 +258,7 @@ public class Game : MonoBehaviour
         if (targetPiece != null) targetPiece.SetActive(false);
 
         bool isInCheck = IsInCheck();
-        
+
         SetPositionEmpty(targetX, targetY);
         chessman.SetXBoard(originalX);
         chessman.SetYBoard(originalY);
@@ -263,5 +271,206 @@ public class Game : MonoBehaviour
         }
 
         return !isInCheck;
+    }
+
+    public int EvaluateBoard()
+    {
+        int evaluation = 0;
+
+        for (int x = 0; x < 8; x++)
+        {
+            for (int y = 0; y < 8; y++)
+            {
+                GameObject piece = _positions[x, y];
+                if (piece != null && piece.activeSelf)
+                {
+                    if (piece.name.StartsWith("white"))
+                    {
+                        evaluation += GetPieceValue(piece.name);
+                    }
+                    else if (piece.name.StartsWith("black"))
+                    {
+                        evaluation -= GetPieceValue(piece.name);
+                    }
+                }
+            }
+        }
+
+        return evaluation;
+    }
+
+    private int GetPieceValue(string pieceName)
+    {
+        switch (pieceName)
+        {
+            case "white_pawn":
+            case "black_pawn": return 100;
+            case "white_knight":
+            case "black_knight": return 320;
+            case "white_bishop":
+            case "black_bishop": return 330;
+            case "white_rook":
+            case "black_rook": return 500;
+            case "white_queen":
+            case "black_queen": return 900;
+            case "white_king":
+            case "black_king": return 20000;
+            default: return 0;
+        }
+    }
+
+    public List<Move> GetAllPossibleMoves(string player)
+    {
+        List<Move> moves = new List<Move>();
+        GameObject[] pieces = player == "white" ? playerWhite : playerBlack;
+
+        foreach (var piece in pieces)
+        {
+            if (piece != null && piece.activeSelf)
+            {
+                Chessman cm = piece.GetComponent<Chessman>();
+                List<Vector2> possibleMoves = cm.GetPossibleMoves();
+
+                foreach (var move in possibleMoves)
+                {
+                    if (IsMoveLegal(piece, (int)move.x, (int)move.y))
+                    {
+                        moves.Add(new Move(piece, (int)move.x, (int)move.y));
+                    }
+                }
+            }
+        }
+
+        return moves;
+    }
+
+    public class Move
+    {
+        public GameObject Piece;
+        public int StartX;
+        public int StartY;
+        public int TargetX;
+        public int TargetY;
+        public GameObject CapturedPiece;
+
+        public Move(GameObject piece, int targetX, int targetY)
+        {
+            Piece = piece;
+            StartX = piece.GetComponent<Chessman>().GetXBoard();
+            StartY = piece.GetComponent<Chessman>().GetYBoard();
+            TargetX = targetX;
+            TargetY = targetY;
+            CapturedPiece = null;
+        }
+    }
+
+    public int Minimax(int depth, int alpha, int beta, bool isMaximizingPlayer)
+    {
+        if (depth == 0 || IsGameOver())
+        {
+            return EvaluateBoard();
+        }
+
+        if (isMaximizingPlayer)
+        {
+            int maxEval = int.MinValue;
+            foreach (var move in GetAllPossibleMoves("black"))
+            {
+                MakeMove(move);
+                int eval = Minimax(depth - 1, alpha, beta, false);
+                UndoMove(move);
+                maxEval = Mathf.Max(maxEval, eval);
+                alpha = Mathf.Max(alpha, eval);
+                if (beta <= alpha)
+                {
+                    break;
+                }
+            }
+
+            return maxEval;
+        }
+        else
+        {
+            int minEval = int.MaxValue;
+            foreach (var move in GetAllPossibleMoves("white"))
+            {
+                MakeMove(move);
+                int eval = Minimax(depth - 1, alpha, beta, true);
+                UndoMove(move);
+                minEval = Mathf.Min(minEval, eval);
+                beta = Mathf.Min(beta, eval);
+                if (beta <= alpha)
+                {
+                    break;
+                }
+            }
+
+            return -minEval;
+        }
+    }
+
+    private void MakeMove(Move move)
+    {
+        move.CapturedPiece = GetPosition(move.TargetX, move.TargetY);
+
+        if (move.CapturedPiece != null)
+        {
+            move.CapturedPiece.SetActive(false);
+        }
+
+        SetPositionEmpty(move.StartX, move.StartY);
+        move.Piece.GetComponent<Chessman>().SetXBoard(move.TargetX);
+        move.Piece.GetComponent<Chessman>().SetYBoard(move.TargetY);
+        SetPosition(move.Piece);
+
+        _moveHistory.Push(move);
+    }
+
+    private void UndoMove(Move move)
+    {
+        SetPositionEmpty(move.Piece.GetComponent<Chessman>().GetXBoard(), move.Piece.GetComponent<Chessman>().GetYBoard());
+        move.Piece.GetComponent<Chessman>().SetXBoard(move.StartX);
+        move.Piece.GetComponent<Chessman>().SetYBoard(move.StartY);
+        SetPosition(move.Piece);
+
+        if (move.CapturedPiece != null)
+        {
+            move.CapturedPiece.SetActive(true);
+            SetPosition(move.CapturedPiece);
+        }
+
+        _moveHistory.Pop();
+    }
+
+    public void MakeBestMove()
+    {
+        Move bestMove = null;
+        int bestValue = int.MinValue;
+
+        foreach (var move in GetAllPossibleMoves("black"))
+        {
+            MakeMove(move);
+            int boardValue = Minimax(3, int.MinValue, int.MaxValue, false);
+            UndoMove(move);
+
+            if (boardValue > bestValue)
+            {
+                bestValue = boardValue;
+                bestMove = move;
+            }
+        }
+
+        if (bestMove != null)
+        {
+            MakeMove(bestMove);
+            bestMove.Piece.GetComponent<Chessman>().MovePiece(bestMove.TargetX, bestMove.TargetY);
+            NextTurn();
+        }
+    }
+
+    private void AddPieceBack(GameObject piece, List<GameObject> pieces)
+    {
+        pieces.Add(piece);
+        piece.SetActive(true);
     }
 }

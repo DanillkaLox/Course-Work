@@ -48,6 +48,6 @@ public class PauseMenu : MonoBehaviour
     public void Restart()
     {
         AudioManager.Instance.Play("ButtonSound");
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("1VS1");
     }
 }

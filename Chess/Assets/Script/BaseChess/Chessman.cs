@@ -485,7 +485,13 @@ public class Chessman : MonoBehaviour
         if (sc.PositionOnBoard(_xBoard, _yBoard + direction) && sc.GetPosition(_xBoard, _yBoard + direction) == null)
         {
             moves.Add(new Vector2(_xBoard, _yBoard + direction));
+            
+            if (!_hasMoved && sc.PositionOnBoard(_xBoard, _yBoard + 2 * direction) && sc.GetPosition(_xBoard, _yBoard + 2 * direction) == null)
+            {
+                moves.Add(new Vector2(_xBoard, _yBoard + 2 * direction));
+            }
         }
+        
         if (sc.PositionOnBoard(_xBoard + 1, _yBoard + direction) && sc.GetPosition(_xBoard + 1, _yBoard + direction) != null && sc.GetPosition(_xBoard + 1, _yBoard + direction).GetComponent<Chessman>().player != player)
         {
             moves.Add(new Vector2(_xBoard + 1, _yBoard + direction));
@@ -504,5 +510,4 @@ public class Chessman : MonoBehaviour
             moves.Add(new Vector2(x, y));
         }
     }
-    
 }
