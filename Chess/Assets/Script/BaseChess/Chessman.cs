@@ -323,10 +323,6 @@ public class Chessman : MonoBehaviour
                 {
                     promotionMenu.OpenPromotionMenu(this);
                 }
-                else
-                {
-                    Debug.LogError("PromotionMenu not found in the scene.");
-                }
             }
         }
     }
@@ -510,4 +506,5 @@ public class Chessman : MonoBehaviour
             moves.Add(new Vector2(x, y));
         }
     }
+    
 }

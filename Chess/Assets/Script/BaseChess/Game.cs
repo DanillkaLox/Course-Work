@@ -13,6 +13,8 @@ public class Game : MonoBehaviour
     private readonly GameObject[,] _positions = new GameObject[8, 8];
     public GameObject[] playerBlack = new GameObject[16];
     public GameObject[] playerWhite = new GameObject[16];
+    public GameObject[] playerWhiteActive = new GameObject[16];
+    public GameObject[] playerBlackActive = new GameObject[16];
 
     private string _currentPlayer = "white";
 
@@ -276,27 +278,37 @@ public class Game : MonoBehaviour
     public int EvaluateBoard()
     {
         int evaluation = 0;
-
-        for (int x = 0; x < 8; x++)
+        foreach (var piece in playerWhite)
         {
-            for (int y = 0; y < 8; y++)
+            if (piece != null && piece.activeSelf)
             {
-                GameObject piece = _positions[x, y];
-                if (piece != null && piece.activeSelf)
-                {
-                    if (piece.name.StartsWith("white"))
-                    {
-                        evaluation += GetPieceValue(piece.name);
-                    }
-                    else if (piece.name.StartsWith("black"))
-                    {
-                        evaluation -= GetPieceValue(piece.name);
-                    }
-                }
+                evaluation += GetPieceValue(piece.name);
+            }
+        }
+        foreach (var piece in playerBlack)
+        {
+            if (piece != null && piece.activeSelf)
+            {
+                evaluation -= GetPieceValue(piece.name);
             }
         }
 
-        return evaluation;
+        if (IsInCheckmate())
+        {
+            if (_currentPlayer == "white")
+                evaluation += 20000;
+            else
+                evaluation -= 20000;
+        }
+        else if (IsInCheck())
+        {
+            if (_currentPlayer == "white")
+                evaluation += 500;
+            else
+                evaluation -= 500;
+        }
+
+        return -evaluation;
     }
 
     private int GetPieceValue(string pieceName)
@@ -313,8 +325,6 @@ public class Game : MonoBehaviour
             case "black_rook": return 500;
             case "white_queen":
             case "black_queen": return 900;
-            case "white_king":
-            case "black_king": return 20000;
             default: return 0;
         }
     }
@@ -344,26 +354,6 @@ public class Game : MonoBehaviour
         return moves;
     }
 
-    public class Move
-    {
-        public GameObject Piece;
-        public int StartX;
-        public int StartY;
-        public int TargetX;
-        public int TargetY;
-        public GameObject CapturedPiece;
-
-        public Move(GameObject piece, int targetX, int targetY)
-        {
-            Piece = piece;
-            StartX = piece.GetComponent<Chessman>().GetXBoard();
-            StartY = piece.GetComponent<Chessman>().GetYBoard();
-            TargetX = targetX;
-            TargetY = targetY;
-            CapturedPiece = null;
-        }
-    }
-
     public int Minimax(int depth, int alpha, int beta, bool isMaximizingPlayer)
     {
         if (depth == 0 || IsGameOver())
@@ -376,14 +366,17 @@ public class Game : MonoBehaviour
             int maxEval = int.MinValue;
             foreach (var move in GetAllPossibleMoves("black"))
             {
-                MakeMove(move);
-                int eval = Minimax(depth - 1, alpha, beta, false);
-                UndoMove(move);
-                maxEval = Mathf.Max(maxEval, eval);
-                alpha = Mathf.Max(alpha, eval);
-                if (beta <= alpha)
+                if (IsMoveLegal(move.Piece, move.TargetX, move.TargetY))
                 {
-                    break;
+                    MakeMove(move);
+                    int eval = Minimax(depth - 1, alpha, beta, false);
+                    UndoMove(move);
+                    maxEval = Mathf.Max(maxEval, eval);
+                    alpha = Mathf.Max(alpha, eval);
+                    if (beta <= alpha)
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -394,18 +387,21 @@ public class Game : MonoBehaviour
             int minEval = int.MaxValue;
             foreach (var move in GetAllPossibleMoves("white"))
             {
-                MakeMove(move);
-                int eval = Minimax(depth - 1, alpha, beta, true);
-                UndoMove(move);
-                minEval = Mathf.Min(minEval, eval);
-                beta = Mathf.Min(beta, eval);
-                if (beta <= alpha)
+                if (IsMoveLegal(move.Piece, move.TargetX, move.TargetY))
                 {
-                    break;
+                    MakeMove(move);
+                    int eval = Minimax(depth - 1, alpha, beta, true);
+                    UndoMove(move);
+                    minEval = Mathf.Min(minEval, eval);
+                    beta = Mathf.Min(beta, eval);
+                    if (beta <= alpha)
+                    {
+                        break;
+                    }
                 }
             }
 
-            return -minEval;
+            return minEval;
         }
     }
 
@@ -446,11 +442,12 @@ public class Game : MonoBehaviour
     {
         Move bestMove = null;
         int bestValue = int.MinValue;
-
-        foreach (var move in GetAllPossibleMoves("black"))
+        List<Move> moves = GetAllPossibleMoves("black");
+        
+        foreach (var move in moves)
         {
             MakeMove(move);
-            int boardValue = Minimax(3, int.MinValue, int.MaxValue, false);
+            int boardValue = Minimax(2, int.MinValue, int.MaxValue, false);
             UndoMove(move);
 
             if (boardValue > bestValue)
@@ -466,11 +463,5 @@ public class Game : MonoBehaviour
             bestMove.Piece.GetComponent<Chessman>().MovePiece(bestMove.TargetX, bestMove.TargetY);
             NextTurn();
         }
-    }
-
-    private void AddPieceBack(GameObject piece, List<GameObject> pieces)
-    {
-        pieces.Add(piece);
-        piece.SetActive(true);
     }
 }
