@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Move
 {
-    public GameObject Piece;
-    public int StartX;
-    public int StartY;
-    public int TargetX;
-    public int TargetY;
+    public readonly GameObject Piece;
+    public readonly int StartX;
+    public readonly int StartY;
+    public readonly int TargetX;
+    public readonly int TargetY;
     public GameObject CapturedPiece;
 
     public Move(GameObject piece, int targetX, int targetY)

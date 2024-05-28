@@ -2,6 +2,13 @@ using UnityEngine;
 
 public static class BoardEvaluator
 {
+    private static Game _game;
+
+    public static void Initialize(Game game)
+    {
+        _game = game;
+    }
+
     public static int EvaluateBoard(GameObject[,] positions, GameObject[] playerWhite, GameObject[] playerBlack)
     {
         int evaluation = 0;
@@ -20,6 +27,21 @@ public static class BoardEvaluator
             {
                 evaluation -= GetPieceValue(piece.name);
             }
+        }
+
+        if (_game.IsInCheckmate())
+        {
+            if (_game.GetCurrentPlayer() == "white")
+                evaluation += 20000;
+            else
+                evaluation -= 20000;
+        }
+        else if (_game.IsInCheck())
+        {
+            if (_game.GetCurrentPlayer() == "white")
+                evaluation += 500;
+            else
+                evaluation -= 500;
         }
 
         return -evaluation;

@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
@@ -13,13 +13,13 @@ public class Game : MonoBehaviour
     public GameObject[] playerWhite = new GameObject[16];
     private string _currentPlayer = "white";
     private bool _gameOver;
-    private Stack<Move> _moveHistory = new Stack<Move>();
 
     public void Start()
     {
         Time.timeScale = 1f;
         InitializePieces();
         PlacePiecesOnBoard();
+        BoardEvaluator.Initialize(this);
     }
 
     private void InitializePieces()
@@ -85,7 +85,7 @@ public class Game : MonoBehaviour
             Debug.Log(_currentPlayer + " is in check!");
         }
 
-        if (_currentPlayer == "black")
+        if (_currentPlayer == "black" && SceneManager.GetActiveScene().name == "VSComputer")
         {
             MakeBestMove();
         }
@@ -112,12 +112,12 @@ public class Game : MonoBehaviour
         winnerText.GetComponent<Text>().text = playerWinner + " IS THE WINNER";
     }
 
-    private bool IsInCheck()
+    public bool IsInCheck()
     {
         return CheckValidator.IsInCheck(_currentPlayer, _positions, playerWhite, playerBlack);
     }
 
-    private bool IsInCheckmate()
+    public bool IsInCheckmate()
     {
         return CheckValidator.IsInCheckmate(_currentPlayer, _positions, playerWhite, playerBlack);
     }
@@ -136,11 +136,15 @@ public class Game : MonoBehaviour
         return MoveValidator.IsMoveLegal(piece, targetX, targetY, _positions, _currentPlayer, playerWhite, playerBlack);
     }
 
-    public void MakeBestMove()
+    private void MakeBestMove()
     {
         Move bestMove = MinimaxAlgorithm.GetBestMove(_positions, playerWhite, playerBlack, _currentPlayer);
         if (bestMove != null)
         {
+            if (bestMove.CapturedPiece != null)
+            {
+                RemovePiece(bestMove.CapturedPiece);
+            }
             ExecuteMove(bestMove);
         }
     }

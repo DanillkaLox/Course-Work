@@ -61,11 +61,12 @@ public class PromotionMenu  : MonoBehaviour
         
         _game.SetPositionEmpty(x, y);
         
-        GameObject newChessman = PieceInitializer.CreatePiece(newPiece, x, y, gameObject);
-        newChessman.name = color + "_" + newPiece;
-        _game.SetPosition(newChessman);
+        string piece = color + "_" + newPiece;
+        GameObject newChessman = PieceInitializer.CreatePiece(piece, x, y, _game.chessPiece);
         
         _game.RemovePiece(_pawnToPromote.gameObject);
+        
+        _game.SetPosition(newChessman);
 
         promotionMenu.SetActive(false);
         Time.timeScale = 1f;
