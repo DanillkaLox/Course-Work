@@ -58,10 +58,14 @@ public class PromotionMenu  : MonoBehaviour
         int x = _pawnToPromote.GetXBoard();
         int y = _pawnToPromote.GetYBoard();
         string color = _pawnToPromote.name.Contains("white") ? "white" : "black";
-
-        Destroy(_pawnToPromote.gameObject);
-        GameObject newChessman = _game.Create(color + "_" + newPiece, x, y);
+        
+        _game.SetPositionEmpty(x, y);
+        
+        GameObject newChessman = PieceInitializer.CreatePiece(newPiece, x, y, gameObject);
+        newChessman.name = color + "_" + newPiece;
         _game.SetPosition(newChessman);
+        
+        _game.RemovePiece(_pawnToPromote.gameObject);
 
         promotionMenu.SetActive(false);
         Time.timeScale = 1f;

@@ -24,28 +24,31 @@ public class MovePlate : MonoBehaviour
 
     public void OnMouseUp()
     {
-        controller = GameObject.FindGameObjectWithTag("GameController");
-
-        if (attack)
+        if (Time.timeScale >= 1)
         {
-            GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);
+            controller = GameObject.FindGameObjectWithTag("GameController");
 
-            if (cp.name == "white_king") controller.GetComponent<Game>().Winner("BLACK");
-            if (cp.name == "black_king") controller.GetComponent<Game>().Winner("WHITE");
-            
-            controller.GetComponent<Game>().RemovePiece(cp);
+            if (attack)
+            {
+                GameObject cp = controller.GetComponent<Game>().GetPosition(matrixX, matrixY);
+
+                if (cp.name == "white_king") controller.GetComponent<Game>().Winner("BLACK");
+                if (cp.name == "black_king") controller.GetComponent<Game>().Winner("WHITE");
+
+                controller.GetComponent<Game>().RemovePiece(cp);
+            }
+
+            controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Chessman>().GetXBoard(),
+                reference.GetComponent<Chessman>().GetYBoard());
+
+            reference.GetComponent<Chessman>().MovePiece(matrixX, matrixY);
+
+            controller.GetComponent<Game>().SetPosition(reference);
+
+            reference.GetComponent<Chessman>().DestroyMovePlates();
+
+            controller.GetComponent<Game>().NextTurn();
         }
-
-        controller.GetComponent<Game>().SetPositionEmpty(reference.GetComponent<Chessman>().GetXBoard(),
-            reference.GetComponent<Chessman>().GetYBoard());
-
-        reference.GetComponent<Chessman>().MovePiece(matrixX, matrixY);
-
-        controller.GetComponent<Game>().SetPosition(reference);
-
-        reference.GetComponent<Chessman>().DestroyMovePlates();
-
-        controller.GetComponent<Game>().NextTurn();
     }
 
     public void SetCoords(int x, int y)
