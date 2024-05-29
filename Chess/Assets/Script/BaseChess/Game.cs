@@ -21,6 +21,10 @@ public class Game : MonoBehaviour
     public GameObject startGameButton;
     public GameObject trashButton;
     public GameObject piecePanal;
+    public GameObject pcButton;
+    public GameObject vsButton;
+
+    public int customMode = 1;
 
     private int whiteKingCount;
     private int blackKingCount;
@@ -112,7 +116,7 @@ public class Game : MonoBehaviour
             Debug.Log(_currentPlayer + " is in check!");
         }
 
-        if (_currentPlayer == "black" && SceneManager.GetActiveScene().name != "1VS1")
+        if (_currentPlayer == "black" && (SceneManager.GetActiveScene().name == "VSComputer" || customMode == 2))
         {
             MakeBestMove();
         }
@@ -358,6 +362,8 @@ public class Game : MonoBehaviour
         startGameButton.SetActive(false);
         trashButton.SetActive(false);
         piecePanal.SetActive(false);
+        vsButton.SetActive(false);
+        pcButton.SetActive(false);
         BoardEvaluator.Initialize(this);
     }
 
@@ -507,6 +513,16 @@ public class Game : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void VsMode()
+    {
+        customMode = 1;
+    }
+    
+    public void PcMode()
+    {
+        customMode = 2;
     }
 }
 

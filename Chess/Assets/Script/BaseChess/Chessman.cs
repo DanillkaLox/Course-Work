@@ -209,12 +209,12 @@ public class Chessman : MonoBehaviour
         
         if (!_hasMoved)
         {
-            if (player == "white")
+            if (player == "white" && GetXBoard() == 4 && GetYBoard() == 0)
             {
                 CastlingMovePlate(0, 0, 2, 0, 3, 0, 1, false);
                 CastlingMovePlate(7, 0, 6, 0, 5, 0, 0, true);
             }
-            else if (player == "black")
+            else if (player == "black" && GetXBoard() == 4 && GetYBoard() == 0)
             {
                 CastlingMovePlate(0, 7, 2, 7, 3, 7, 1, false);
                 CastlingMovePlate(7, 7, 6, 7, 5, 7, 0, true);
