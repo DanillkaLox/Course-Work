@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PromotionMenu  : MonoBehaviour
+public class PromotionMenu : MonoBehaviour
 {
     public GameObject promotionMenu;
     public Button queenButton;
@@ -21,10 +21,12 @@ public class PromotionMenu  : MonoBehaviour
 
     private Game _game;
     private Chessman _pawnToPromote;
+    private UIManager _uiManager;
 
     private void Start()
     {
         _game = FindObjectOfType<Game>();
+        _uiManager = FindObjectOfType<UIManager>();
 
         queenButton.onClick.AddListener(() => PromotePawn("queen"));
         rookButton.onClick.AddListener(() => PromotePawn("rook"));
@@ -51,6 +53,7 @@ public class PromotionMenu  : MonoBehaviour
         }
         promotionMenu.SetActive(true);
         Time.timeScale = 0f;
+        _uiManager.LockUI();
     }
 
     private void PromotePawn(string newPiece)
@@ -70,5 +73,6 @@ public class PromotionMenu  : MonoBehaviour
 
         promotionMenu.SetActive(false);
         Time.timeScale = 1f;
+        _uiManager.UnlockUI();
     }
 }

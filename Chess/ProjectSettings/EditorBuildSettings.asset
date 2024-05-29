@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/VSComputer.unity
     guid: 797a9ccbc9585114fb26bb483e0ab557
+  - enabled: 1
+    path: Assets/Scenes/Custom.unity
+    guid: e9c465fdea66622428132ea836eb6dca
   m_configObjects: {}

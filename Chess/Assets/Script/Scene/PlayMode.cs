@@ -19,6 +19,7 @@ public class PlayMode : MonoBehaviour
     
     public void Custom()
     {
+        SceneManager.LoadScene("Custom");
         AudioManager.Instance.Play("ButtonSound");
     }
 

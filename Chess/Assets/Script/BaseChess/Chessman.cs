@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
 
 public class Chessman : MonoBehaviour
 {
@@ -87,11 +88,17 @@ public class Chessman : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (!controller.GetComponent<Game>().IsGameOver() && controller.GetComponent<Game>().GetCurrentPlayer() == player && Time.timeScale >= 1)
+        if (!controller.GetComponent<Game>().IsGameOver() && controller.GetComponent<Game>().GetCurrentPlayer() == player && Time.timeScale >= 1 && !controller.GetComponent<Game>().IsSetupMode())
         {
             DestroyMovePlates();
 
             InitiateMovePlates();
+        }
+        if (SceneManager.GetActiveScene().name == "Custom" && controller.GetComponent<PieceSelection>().delete)
+        {
+            controller.GetComponent<Game>().RemovePiece(this.gameObject);
+            Destroy(this.gameObject);
+            controller.GetComponent<PieceSelection>().DeletePieceReset();
         }
     }
 
