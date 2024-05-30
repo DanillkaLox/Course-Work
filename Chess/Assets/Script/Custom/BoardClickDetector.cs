@@ -7,42 +7,45 @@ public class BoardClickDetector : MonoBehaviour
     void OnMouseUp()
     {
         Game gameComponent = controller.GetComponent<Game>();
-        Vector3 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2Int boardCoords = ConvertToBoardCoordinates(clickPosition);
-
-        if (gameComponent.PositionOnBoard(boardCoords.x, boardCoords.y))
+        if (Camera.main != null)
         {
-            if (gameComponent.GetComponent<PieceSelection>().pieceSpawn)
+            Vector3 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2Int boardCoords = ConvertToBoardCoordinates(clickPosition);
+
+            if (gameComponent.PositionOnBoard(boardCoords.x, boardCoords.y))
             {
-                string pieceName = gameComponent.GetComponent<PieceSelection>().selectedPiece;
-                string player = pieceName.Contains("white") ? "white" : "black";
-
-                if (gameComponent.CanAddPiece(pieceName, player))
+                if (gameComponent.GetComponent<PieceSelection>().pieceSpawn)
                 {
-                    GameObject newChessman = PieceInitializer.CreatePiece(pieceName, boardCoords.x, boardCoords.y, gameComponent.chessPiece);
-                    gameComponent.SetPosition(newChessman);
+                    string pieceName = gameComponent.GetComponent<PieceSelection>().selectedPiece;
+                    string player = pieceName.Contains("white") ? "white" : "black";
 
-                    for (int i = 0; i < 16; i++)
+                    if (gameComponent.CanAddPiece(pieceName, player))
                     {
-                        if (player == "white" && gameComponent.playerWhite[i] == null)
+                        GameObject newChessman = PieceInitializer.CreatePiece(pieceName, boardCoords.x, boardCoords.y, gameComponent.chessPiece);
+                        gameComponent.SetPosition(newChessman);
+
+                        for (int i = 0; i < 16; i++)
                         {
-                            gameComponent.playerWhite[i] = newChessman;
-                            gameComponent.AddPiece(pieceName, newChessman);
-                            gameComponent.GetComponent<PieceSelection>().PieceReset();
-                            break;
-                        }
-                        if (player == "black" && gameComponent.playerBlack[i] == null)
-                        {
-                            gameComponent.playerBlack[i] = newChessman;
-                            gameComponent.AddPiece(pieceName, newChessman);
-                            gameComponent.GetComponent<PieceSelection>().PieceReset();
-                            break;
+                            if (player == "white" && gameComponent.playerWhite[i] == null)
+                            {
+                                gameComponent.playerWhite[i] = newChessman;
+                                gameComponent.AddPiece(pieceName, newChessman);
+                                gameComponent.GetComponent<PieceSelection>().PieceReset();
+                                break;
+                            }
+                            if (player == "black" && gameComponent.playerBlack[i] == null)
+                            {
+                                gameComponent.playerBlack[i] = newChessman;
+                                gameComponent.AddPiece(pieceName, newChessman);
+                                gameComponent.GetComponent<PieceSelection>().PieceReset();
+                                break;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    Debug.Log("Cannot place this piece due to restrictions");
+                    else
+                    {
+                        Debug.Log("Cannot place this piece due to restrictions");
+                    }
                 }
             }
         }

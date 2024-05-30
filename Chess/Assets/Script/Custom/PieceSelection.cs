@@ -29,6 +29,7 @@ public class PieceSelection : MonoBehaviour
 
     public void DeletePiece()
     {
+        AudioManager.Instance.Play("ButtonSound");
         delete = true;
         if (pieceSpawn)
         {
@@ -43,6 +44,7 @@ public class PieceSelection : MonoBehaviour
 
     public void WhitePawnPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "white_pawn";
         pieceSpawn = true;
         if (delete)
@@ -52,6 +54,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void BlackPawnPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "black_pawn";
         pieceSpawn = true;
         if (delete)
@@ -61,6 +64,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void WhiteKnightPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "white_knight";
         pieceSpawn = true;
         if (delete)
@@ -70,6 +74,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void BlackKnightPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "black_knight";
         pieceSpawn = true;
         if (delete)
@@ -79,6 +84,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void WhiteBishopPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "white_bishop";
         pieceSpawn = true;
         if (delete)
@@ -88,6 +94,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void BlackBishopPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "black_bishop";
         pieceSpawn = true;
         if (delete)
@@ -97,6 +104,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void WhiteRookPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "white_rook";
         pieceSpawn = true;
         if (delete)
@@ -106,6 +114,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void BlackRookPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "black_rook";
         pieceSpawn = true;
         if (delete)
@@ -115,6 +124,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void WhiteQueenPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "white_queen";
         pieceSpawn = true;
         if (delete)
@@ -124,6 +134,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void BlackQueenPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "black_queen";
         pieceSpawn = true;
         if (delete)
@@ -133,6 +144,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void WhiteKingPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "white_king";
         pieceSpawn = true;
         if (delete)
@@ -142,6 +154,7 @@ public class PieceSelection : MonoBehaviour
     }
     public void BlackKingPiece(string pieceName)
     {
+        AudioManager.Instance.Play("ButtonSound");
         selectedPiece = "black_king";
         pieceSpawn = true;
         if (delete)

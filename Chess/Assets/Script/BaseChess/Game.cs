@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 public class Game : MonoBehaviour
 {
@@ -9,6 +8,7 @@ public class Game : MonoBehaviour
     public GameObject winnerText;
     public GameObject gameOverMenu;
     public GameObject board;
+    public GameObject turnText;
 
     private readonly GameObject[,] _positions = new GameObject[8, 8];
     public GameObject[] playerBlack = new GameObject[16];
@@ -26,20 +26,20 @@ public class Game : MonoBehaviour
 
     public int customMode = 1;
 
-    private int whiteKingCount;
-    private int blackKingCount;
-    private int whitePawnCount;
-    private int blackPawnCount;
-    private int whitePieceCount;
-    private int blackPieceCount;
-    private int whiteKnightCount;
-    private int blackKnightCount;
-    private int whiteBishopCount;
-    private int blackBishopCount;
-    private int whiteRookCount;
-    private int blackRookCount;
-    private int whiteQueenCount;
-    private int blackQueenCount;
+    private int _whiteKingCount;
+    private int _blackKingCount;
+    private int _whitePawnCount;
+    private int _blackPawnCount;
+    private int _whitePieceCount;
+    private int _blackPieceCount;
+    private int _whiteKnightCount;
+    private int _blackKnightCount;
+    private int _whiteBishopCount;
+    private int _blackBishopCount;
+    private int _whiteRookCount;
+    private int _blackRookCount;
+    private int _whiteQueenCount;
+    private int _blackQueenCount;
 
     public void Start()
     {
@@ -50,6 +50,7 @@ public class Game : MonoBehaviour
             PlacePiecesOnBoard();
             BoardEvaluator.Initialize(this);
             _setupMode = false;
+            turnText.SetActive(true);
         }
     }
 
@@ -106,7 +107,7 @@ public class Game : MonoBehaviour
     public void NextTurn()
     {
         _currentPlayer = _currentPlayer == "white" ? "black" : "white";
-
+        turnText.GetComponent<Text>().text = _currentPlayer == "white" ? "WHITE TURN" : "BLACK TURN";
         if (IsInCheckmate())
         {
             Winner(_currentPlayer == "white" ? "black" : "white");
@@ -118,7 +119,7 @@ public class Game : MonoBehaviour
 
         if (_currentPlayer == "black" && (SceneManager.GetActiveScene().name == "VSComputer" || customMode == 2))
         {
-            MakeBestMove();
+            Invoke(nameof(MakeBestMove), 0.1f);
         }
     }
 
@@ -165,9 +166,9 @@ public class Game : MonoBehaviour
         {
             if (cm.player == "white")
             {
-                whitePieceCount--;
-                if (cm.name.Contains("pawn")) whitePawnCount--;
-                if (cm.name.Contains("king")) whiteKingCount--;
+                _whitePieceCount--;
+                if (cm.name.Contains("pawn")) _whitePawnCount--;
+                if (cm.name.Contains("king")) _whiteKingCount--;
                 if (cm.name.Contains("knight"))
                 {
                     for (int i = 0; i < 16; i++)
@@ -179,11 +180,11 @@ public class Game : MonoBehaviour
                     }
                     if (temp <= 2)
                     {
-                        whiteKnightCount--;
+                        _whiteKnightCount--;
                     }
                     else
                     {
-                        whitePawnCount--;
+                        _whitePawnCount--;
                     }
                 }
 
@@ -198,11 +199,11 @@ public class Game : MonoBehaviour
                     }
                     if (temp <= 2)
                     {
-                        whiteBishopCount--;
+                        _whiteBishopCount--;
                     }
                     else
                     {
-                        whitePawnCount--;
+                        _whitePawnCount--;
                     }
                 }
 
@@ -217,11 +218,11 @@ public class Game : MonoBehaviour
                     }
                     if (temp <= 2)
                     {
-                        whiteRookCount--;
+                        _whiteRookCount--;
                     }
                     else
                     {
-                        whitePawnCount--;
+                        _whitePawnCount--;
                     }
                 }
 
@@ -236,19 +237,19 @@ public class Game : MonoBehaviour
                     }
                     if (temp <= 1)
                     {
-                        whiteQueenCount--;
+                        _whiteQueenCount--;
                     }
                     else
                     {
-                        whitePawnCount--;
+                        _whitePawnCount--;
                     }
                 }
             }
             else
             {
-                blackPieceCount--;
-                if (cm.name.Contains("king")) blackKingCount--;
-                if (cm.name.Contains("pawn")) blackPawnCount--;
+                _blackPieceCount--;
+                if (cm.name.Contains("king")) _blackKingCount--;
+                if (cm.name.Contains("pawn")) _blackPawnCount--;
                 if (cm.name.Contains("knight"))
                 {
                     if (cm.name.Contains("knight"))
@@ -262,11 +263,11 @@ public class Game : MonoBehaviour
                         }
                         if (temp <= 2)
                         {
-                            blackKnightCount--;
+                            _blackKnightCount--;
                         }
                         else
                         {
-                            blackPawnCount--;
+                            _blackPawnCount--;
                         }
                     }
                 }
@@ -281,11 +282,11 @@ public class Game : MonoBehaviour
                     }
                     if (temp <= 2)
                     {
-                        blackBishopCount--;
+                        _blackBishopCount--;
                     }
                     else
                     {
-                        blackPawnCount--;
+                        _blackPawnCount--;
                     }
                 }
 
@@ -300,11 +301,11 @@ public class Game : MonoBehaviour
                     }
                     if (temp <= 2)
                     {
-                        blackRookCount--;
+                        _blackRookCount--;
                     }
                     else
                     {
-                        blackPawnCount--;
+                        _blackPawnCount--;
                     }
                 }
 
@@ -319,11 +320,11 @@ public class Game : MonoBehaviour
                     }
                     if (temp <= 1)
                     {
-                        blackQueenCount--;
+                        _blackQueenCount--;
                     }
                     else
                     {
-                        blackPawnCount--;
+                        _blackPawnCount--;
                     }
                 }
             }
@@ -358,13 +359,18 @@ public class Game : MonoBehaviour
 
     public void StartGame()
     {
-        _setupMode = false;
-        startGameButton.SetActive(false);
-        trashButton.SetActive(false);
-        piecePanal.SetActive(false);
-        vsButton.SetActive(false);
-        pcButton.SetActive(false);
-        BoardEvaluator.Initialize(this);
+        AudioManager.Instance.Play("ButtonSound");
+        if (_whiteKingCount != 0 && _blackKingCount != 0)
+        {
+            _setupMode = false;
+            startGameButton.SetActive(false);
+            trashButton.SetActive(false);
+            piecePanal.SetActive(false);
+            vsButton.SetActive(false);
+            pcButton.SetActive(false);
+            turnText.SetActive(true);
+            BoardEvaluator.Initialize(this);
+        }
     }
 
     public bool IsSetupMode()
@@ -376,29 +382,29 @@ public class Game : MonoBehaviour
     {
         if (player == "white")
         {
-            if (whitePieceCount >= 16) return false;
-            if (pieceName.Contains("king") && whiteKingCount >= 1) return false;
-            if (pieceName.Contains("pawn") && whitePawnCount >= 8) return false;
+            if (_whitePieceCount >= 16) return false;
+            if (pieceName.Contains("king") && _whiteKingCount >= 1) return false;
+            if (pieceName.Contains("pawn") && _whitePawnCount >= 8) return false;
 
-            int maxAdditionalPieces = 8 - whitePawnCount;
+            int maxAdditionalPieces = 8 - _whitePawnCount;
 
-            if (pieceName.Contains("knight") && whiteKnightCount >= 2 + maxAdditionalPieces) return false;
-            if (pieceName.Contains("bishop") && whiteBishopCount >= 2 + maxAdditionalPieces) return false;
-            if (pieceName.Contains("rook") && whiteRookCount >= 2 + maxAdditionalPieces) return false;
-            if (pieceName.Contains("queen") && whiteQueenCount >= 1 + maxAdditionalPieces) return false;
+            if (pieceName.Contains("knight") && _whiteKnightCount >= 2 + maxAdditionalPieces) return false;
+            if (pieceName.Contains("bishop") && _whiteBishopCount >= 2 + maxAdditionalPieces) return false;
+            if (pieceName.Contains("rook") && _whiteRookCount >= 2 + maxAdditionalPieces) return false;
+            if (pieceName.Contains("queen") && _whiteQueenCount >= 1 + maxAdditionalPieces) return false;
         }
         else
         {
-            if (blackPieceCount >= 16) return false;
-            if (pieceName.Contains("king") && blackKingCount >= 1) return false;
-            if (pieceName.Contains("pawn") && blackPawnCount >= 8) return false;
+            if (_blackPieceCount >= 16) return false;
+            if (pieceName.Contains("king") && _blackKingCount >= 1) return false;
+            if (pieceName.Contains("pawn") && _blackPawnCount >= 8) return false;
 
-            int maxAdditionalPieces = 8 - blackPawnCount;
+            int maxAdditionalPieces = 8 - _blackPawnCount;
 
-            if (pieceName.Contains("knight") && blackKnightCount >= 2 + maxAdditionalPieces) return false;
-            if (pieceName.Contains("bishop") && blackBishopCount >= 2 + maxAdditionalPieces) return false;
-            if (pieceName.Contains("rook") && blackRookCount >= 2 + maxAdditionalPieces) return false;
-            if (pieceName.Contains("queen") && blackQueenCount >= 1 + maxAdditionalPieces) return false;
+            if (pieceName.Contains("knight") && _blackKnightCount >= 2 + maxAdditionalPieces) return false;
+            if (pieceName.Contains("bishop") && _blackBishopCount >= 2 + maxAdditionalPieces) return false;
+            if (pieceName.Contains("rook") && _blackRookCount >= 2 + maxAdditionalPieces) return false;
+            if (pieceName.Contains("queen") && _blackQueenCount >= 1 + maxAdditionalPieces) return false;
         }
 
         return true;
@@ -408,108 +414,108 @@ public class Game : MonoBehaviour
     {
         if (piece.GetComponent<Chessman>().player == "white")
         {
-            whitePieceCount++;
-            if (pieceName.Contains("king")) whiteKingCount++;
-            if (pieceName.Contains("pawn")) whitePawnCount++;
+            _whitePieceCount++;
+            if (pieceName.Contains("king")) _whiteKingCount++;
+            if (pieceName.Contains("pawn")) _whitePawnCount++;
             if (pieceName.Contains("knight"))
             {
-                if (whiteKnightCount <= 1)
+                if (_whiteKnightCount <= 1)
                 {
-                    whiteKnightCount++;
+                    _whiteKnightCount++;
                 }
                 else
                 {
-                    whitePawnCount++;
+                    _whitePawnCount++;
                 }
             }
 
             if (pieceName.Contains("bishop"))
             {
-                if (whiteBishopCount <= 1)
+                if (_whiteBishopCount <= 1)
                 {
-                    whiteBishopCount++;
+                    _whiteBishopCount++;
                 }
                 else
                 {
-                    whitePawnCount++;
+                    _whitePawnCount++;
                 }
                 
             }
 
             if (pieceName.Contains("rook"))
             {
-                if (whiteRookCount <= 1)
+                if (_whiteRookCount <= 1)
                 {
-                    whiteRookCount++;
+                    _whiteRookCount++;
                 }
                 else
                 {
-                    whitePawnCount++;
+                    _whitePawnCount++;
                 }
             }
 
             if (pieceName.Contains("queen"))
             {
-                if (whiteQueenCount == 0)
+                if (_whiteQueenCount == 0)
                 {
-                    whiteQueenCount++;
+                    _whiteQueenCount++;
                 }
                 else
                 {
-                    whitePawnCount++;
+                    _whitePawnCount++;
                 }
             }
         }
         else
         {
-            blackPieceCount++;
-            if (pieceName.Contains("king")) blackKingCount++;
-            if (pieceName.Contains("pawn")) blackPawnCount++;
+            _blackPieceCount++;
+            if (pieceName.Contains("king")) _blackKingCount++;
+            if (pieceName.Contains("pawn")) _blackPawnCount++;
             if (pieceName.Contains("knight"))
             {
-                if (blackKnightCount <= 1)
+                if (_blackKnightCount <= 1)
                 {
-                    blackKnightCount++;
+                    _blackKnightCount++;
                 }
                 else
                 {
-                    blackPawnCount++;
+                    _blackPawnCount++;
                 }
             }
 
             if (pieceName.Contains("bishop"))
             {
-                if (blackBishopCount <= 1)
+                if (_blackBishopCount <= 1)
                 {
-                    blackBishopCount++;
+                    _blackBishopCount++;
                 }
                 else
                 {
-                    blackPawnCount++;
+                    _blackPawnCount++;
                 }
             }
 
             if (pieceName.Contains("rook"))
             {
-                if (blackRookCount <= 1)
+                if (_blackRookCount <= 1)
                 {
-                    blackRookCount++;
+                    _blackRookCount++;
                 }
                 else
                 {
-                    blackPawnCount++;
+                    _blackPawnCount++;
                 }
             }
 
             if (pieceName.Contains("queen"))
             {
-                if (blackQueenCount == 0)
+                if (_blackQueenCount == 0)
                 {
-                    blackQueenCount++;
+                    _blackQueenCount++;
                 }
                 else
                 {
-                    blackPawnCount++;
+                    _blackPawnCount++;
                 }
             }
         }
@@ -517,12 +523,15 @@ public class Game : MonoBehaviour
 
     public void VsMode()
     {
+        AudioManager.Instance.Play("ButtonSound");
         customMode = 1;
     }
     
     public void PcMode()
     {
+        AudioManager.Instance.Play("ButtonSound");
         customMode = 2;
     }
+    
 }
 
