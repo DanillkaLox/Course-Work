@@ -1,18 +1,18 @@
-using UnityEngine;
+    using UnityEngine;
 
-public class UIManager : MonoBehaviour
-{
-    public CanvasGroup gameCanvasGroup;
-
-    public void LockUI()
+    public class UIManager : MonoBehaviour
     {
-        gameCanvasGroup.interactable = false;
-        gameCanvasGroup.blocksRaycasts = false;
-    }
+        public CanvasGroup gameCanvasGroup;
 
-    public void UnlockUI()
-    {
-        gameCanvasGroup.interactable = true;
-        gameCanvasGroup.blocksRaycasts = true;
+        public void LockUI()
+        {
+            gameCanvasGroup.interactable = false;
+            gameCanvasGroup.blocksRaycasts = false;
+        }
+
+        public void UnlockUI()
+        {
+            gameCanvasGroup.interactable = true;
+            gameCanvasGroup.blocksRaycasts = true;
+        }
     }
-}
