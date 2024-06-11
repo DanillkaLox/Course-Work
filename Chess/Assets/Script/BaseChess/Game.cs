@@ -10,7 +10,7 @@ public class Game : MonoBehaviour
     public GameObject board;
     public GameObject turnText;
 
-    private readonly GameObject[,] _positions = new GameObject[8, 8];
+    private GameObject[,] _positions = new GameObject[8, 8];
     public GameObject[] playerBlack = new GameObject[16];
     public GameObject[] playerWhite = new GameObject[16];
     private string _currentPlayer = "white";
@@ -23,6 +23,8 @@ public class Game : MonoBehaviour
     public GameObject piecePanal;
     public GameObject pcButton;
     public GameObject vsButton;
+    public GameObject whiteButton;
+    public GameObject blackButton;
 
     public int customMode = 1;
 
@@ -98,6 +100,15 @@ public class Game : MonoBehaviour
     {
         return _currentPlayer;
     }
+    
+    public void WhitePlayer()
+    {
+        _currentPlayer = "white";
+    }
+    public void BlackPlayer()
+    {
+        _currentPlayer = "black";
+    }
 
     public bool IsGameOver()
     {
@@ -108,9 +119,13 @@ public class Game : MonoBehaviour
     {
         _currentPlayer = _currentPlayer == "white" ? "black" : "white";
         turnText.GetComponent<Text>().text = _currentPlayer == "white" ? "WHITE TURN" : "BLACK TURN";
-        if (IsInCheckmate())
+        if (IsInCheckmate() && IsInCheck())
         {
             Winner(_currentPlayer == "white" ? "black" : "white");
+        }
+        else if (IsInCheckmate() && !IsInCheck())
+        {
+            Stalemate();
         }
         else if (IsInCheck())
         {
@@ -141,7 +156,14 @@ public class Game : MonoBehaviour
     public void Winner(string playerWinner)
     {
         _gameOver = true;
-        winnerText.GetComponent<Text>().text = playerWinner + " IS THE WINNER";
+        var player = playerWinner == "white" ? "WHITE" : "BLACK";
+        winnerText.GetComponent<Text>().text = player + " IS THE WINNER";
+    }
+
+    private void Stalemate()
+    {
+        _gameOver = true;
+        winnerText.GetComponent<Text>().text = "STALEMATE";
     }
 
     public bool IsInCheck()
@@ -173,7 +195,7 @@ public class Game : MonoBehaviour
                 {
                     for (int i = 0; i < 16; i++)
                     {
-                        if (playerWhite[i] == cm.name.Contains("knight"))
+                        if (playerWhite[i] == cm.gameObject)
                         {
                             temp++;
                         }
@@ -192,7 +214,7 @@ public class Game : MonoBehaviour
                 {
                     for (int i = 0; i < 16; i++)
                     {
-                        if (playerWhite[i] == cm.name.Contains("bishop"))
+                        if (playerWhite[i] == cm.gameObject)
                         {
                             temp++;
                         }
@@ -211,7 +233,7 @@ public class Game : MonoBehaviour
                 {
                     for (int i = 0; i < 16; i++)
                     {
-                        if (playerWhite[i] == cm.name.Contains("rook"))
+                        if (playerWhite[i] == cm.gameObject)
                         {
                             temp++;
                         }
@@ -230,7 +252,7 @@ public class Game : MonoBehaviour
                 {
                     for (int i = 0; i < 16; i++)
                     {
-                        if (playerWhite[i] == cm.name.Contains("queen"))
+                        if (playerWhite[i] == cm.gameObject)
                         {
                             temp++;
                         }
@@ -256,7 +278,7 @@ public class Game : MonoBehaviour
                     {
                         for (int i = 0; i < 16; i++)
                         {
-                            if (playerBlack[i] == cm.name.Contains("knight"))
+                            if (playerBlack[i] == cm.gameObject)
                             {
                                 temp++;
                             }
@@ -275,7 +297,7 @@ public class Game : MonoBehaviour
                 {
                     for (int i = 0; i < 16; i++)
                     {
-                        if (playerBlack[i] == cm.name.Contains("bishop"))
+                        if (playerBlack[i] == cm.gameObject)
                         {
                             temp++;
                         }
@@ -294,7 +316,7 @@ public class Game : MonoBehaviour
                 {
                     for (int i = 0; i < 16; i++)
                     {
-                        if (playerBlack[i] == cm.name.Contains("rook"))
+                        if (playerBlack[i] == cm.gameObject)
                         {
                             temp++;
                         }
@@ -313,7 +335,7 @@ public class Game : MonoBehaviour
                 {
                     for (int i = 0; i < 16; i++)
                     {
-                        if (playerBlack[i] == cm.name.Contains("queen"))
+                        if (playerBlack[i] == cm.gameObject)
                         {
                             temp++;
                         }
@@ -359,17 +381,70 @@ public class Game : MonoBehaviour
 
     public void StartGame()
     {
+        turnText.SetActive(true);
         AudioManager.Instance.Play("ButtonSound");
         if (_whiteKingCount != 0 && _blackKingCount != 0)
         {
-            _setupMode = false;
-            startGameButton.SetActive(false);
-            trashButton.SetActive(false);
-            piecePanal.SetActive(false);
-            vsButton.SetActive(false);
-            pcButton.SetActive(false);
-            turnText.SetActive(true);
-            BoardEvaluator.Initialize(this);
+            _currentPlayer = _currentPlayer == "white" ? "black" : "white";
+            if (IsInCheckmate() && IsInCheck())
+            {
+                
+                turnText.GetComponent<Text>().text = "It`s checkmate";
+                turnText.GetComponent<Text>().fontSize = 30;
+            }
+            else if (IsInCheckmate() && !IsInCheck())
+            {
+                turnText.GetComponent<Text>().text = "It`s Stalemate";
+                turnText.GetComponent<Text>().fontSize = 30;
+            }
+            else
+            {
+                _currentPlayer = _currentPlayer == "white" ? "black" : "white";
+                if (IsInCheckmate() && IsInCheck())
+                {
+                    turnText.GetComponent<Text>().text = "It`s checkmate";
+                    turnText.GetComponent<Text>().fontSize = 30;
+                }
+                else if (IsInCheckmate() && !IsInCheck())
+                {
+                    turnText.GetComponent<Text>().text = "It`s Stalemate";
+                    turnText.GetComponent<Text>().fontSize = 30;
+                }
+                else
+                {
+                    _currentPlayer = _currentPlayer == "white" ? "black" : "white";
+                    if (IsInCheck())
+                    {
+                        turnText.GetComponent<Text>().text = "Opponent in check";
+                        turnText.GetComponent<Text>().fontSize = 30;
+                        _currentPlayer = _currentPlayer == "white" ? "black" : "white";
+                    }
+                    else
+                    {
+                        _currentPlayer = _currentPlayer == "white" ? "black" : "white";
+                        _setupMode = false;
+                        startGameButton.SetActive(false);
+                        trashButton.SetActive(false);
+                        piecePanal.SetActive(false);
+                        vsButton.SetActive(false);
+                        pcButton.SetActive(false);
+                        whiteButton.SetActive(false);
+                        blackButton.SetActive(false);
+                        turnText.GetComponent<Text>().fontSize = 35;
+                        turnText.GetComponent<Text>().text = _currentPlayer == "white" ? "WHITE TURN" : "BLACK TURN";
+                        BoardEvaluator.Initialize(this);
+                        if (_currentPlayer == "black" && customMode == 2)
+                        {
+                            Invoke(nameof(MakeBestMove), 0.1f);
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            turnText.GetComponent<Text>().text = "On board must be 2 kings";
+            turnText.GetComponent<Text>().fontSize = 30;
         }
     }
 
@@ -532,6 +607,54 @@ public class Game : MonoBehaviour
         AudioManager.Instance.Play("ButtonSound");
         customMode = 2;
     }
-    
+
+    public void SaveGame()
+    {
+        Save.SavePlay(this);
+    }
+
+    public void Load()
+    {
+        GameData data = Save.Load();
+        if (data == null) return;
+        
+        _currentPlayer = data.currentPlayer;
+
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (_positions[i, j] != null)
+                {
+                    Destroy(_positions[i, j]);
+                    SetPositionEmpty(i, j);
+                }
+            }
+        }
+
+        for (int i = 0; i < 16; i++)
+        {
+            playerBlack[i] = null;
+            playerWhite[i] = null;
+        }
+
+        int countWhite = 0;
+        int countBlack = 0;
+        foreach (var pieceData in data.pieces)
+        {
+            GameObject piece = PieceInitializer.CreatePiece(pieceData.pieceName, pieceData.x, pieceData.y, chessPiece);
+            SetPosition(piece);
+            if (pieceData.player == "white")
+            {
+                if (playerWhite != null) playerWhite[countWhite] = piece;
+                countWhite++;
+            }
+            if (pieceData.player == "black")
+            {
+                if (playerBlack != null) playerBlack[countBlack] = piece;
+                countBlack++;
+            }
+        }
+    }
 }
 

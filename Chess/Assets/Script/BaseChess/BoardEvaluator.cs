@@ -29,7 +29,7 @@ public static class BoardEvaluator
             }
         }
 
-        if (_game.IsInCheckmate())
+        if (_game.IsInCheckmate()&& _game.IsInCheck())
         {
             if (_game.GetCurrentPlayer() == "white")
                 evaluation += 20000;

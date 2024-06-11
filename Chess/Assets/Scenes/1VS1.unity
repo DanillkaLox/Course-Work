@@ -361,6 +361,8 @@ MonoBehaviour:
   piecePanal: {fileID: 0}
   pcButton: {fileID: 0}
   vsButton: {fileID: 0}
+  whiteButton: {fileID: 0}
+  blackButton: {fileID: 0}
   customMode: 1
 --- !u!114 &448431078
 MonoBehaviour:

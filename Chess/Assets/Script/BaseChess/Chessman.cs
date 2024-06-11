@@ -214,7 +214,7 @@ public class Chessman : MonoBehaviour
                 CastlingMovePlate(0, 0, 2, 0, 3, 0, 1, false);
                 CastlingMovePlate(7, 0, 6, 0, 5, 0, 0, true);
             }
-            else if (player == "black" && GetXBoard() == 4 && GetYBoard() == 0)
+            else if (player == "black" && GetXBoard() == 4 && GetYBoard() == 7)
             {
                 CastlingMovePlate(0, 7, 2, 7, 3, 7, 1, false);
                 CastlingMovePlate(7, 7, 6, 7, 5, 7, 0, true);
@@ -320,17 +320,13 @@ public class Chessman : MonoBehaviour
         _hasMoved = true;
         
         controller.GetComponent<Game>().SetPosition(this.gameObject);
-        
-        if (name.Contains("pawn"))
+
+        if (!name.Contains("pawn")) return;
+        if ((!name.Contains("white") || y != 7) && (!name.Contains("black") || y != 0)) return;
+        PromotionMenu promotionMenu = FindObjectOfType<PromotionMenu>();
+        if (promotionMenu != null)
         {
-            if ((name.Contains("white") && y == 7) || (name.Contains("black") && y == 0))
-            {
-                PromotionMenu promotionMenu = FindObjectOfType<PromotionMenu>();
-                if (promotionMenu != null)
-                {
-                    promotionMenu.OpenPromotionMenu(this);
-                }
-            }
+            promotionMenu.OpenPromotionMenu(this);
         }
     }
 
@@ -415,6 +411,7 @@ public class Chessman : MonoBehaviour
 
             case "white_king":
             case "black_king":
+                AddCastlingMoves(moves);
                 AddSurroundMoves(moves);
                 break;
 
@@ -502,6 +499,35 @@ public class Chessman : MonoBehaviour
         if (sc.PositionOnBoard(_xBoard - 1, _yBoard + direction) && sc.GetPosition(_xBoard - 1, _yBoard + direction) != null && sc.GetPosition(_xBoard - 1, _yBoard + direction).GetComponent<Chessman>().player != player)
         {
             moves.Add(new Vector2(_xBoard - 1, _yBoard + direction));
+        }
+    }
+    
+    private void AddCastlingMoves(List<Vector2> moves)
+    {
+        Game sc = controller.GetComponent<Game>();
+
+        if (_hasMoved)
+            return;
+        
+        if ((player == "white" && GetXBoard() == 4 && GetYBoard() == 0) || (player == "black" && GetXBoard() == 4 && GetYBoard() == 7))
+        {
+            if (sc.GetPosition(7, GetYBoard()) != null)
+            {
+                Chessman rook = sc.GetPosition(7, GetYBoard()).GetComponent<Chessman>();
+                if (rook != null && !rook._hasMoved && sc.GetPosition(5, GetYBoard()) == null && sc.GetPosition(6, GetYBoard()) == null)
+                {
+                    moves.Add(new Vector2(6, GetYBoard()));
+                }
+            }
+            
+            if (sc.GetPosition(0, GetYBoard()) != null)
+            {
+                Chessman rook = sc.GetPosition(0, GetYBoard()).GetComponent<Chessman>();
+                if (rook != null && !rook._hasMoved && sc.GetPosition(1, GetYBoard()) == null && sc.GetPosition(2, GetYBoard()) == null && sc.GetPosition(3, GetYBoard()) == null)
+                {
+                    moves.Add(new Vector2(2, GetYBoard()));
+                }
+            }
         }
     }
 
